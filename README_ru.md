@@ -42,6 +42,9 @@
 Experience (или любой другой пассивный d3d11-style мод), переписывая
 IAT игрового EXE так, чтобы `D3D11CreateDevice` мода реально вызывался.
 
+> Хочешь готовый copy-paste гайд под именно этот сетап? См.
+> [`docs/keyboard-icons-and-proper-pc.ru.md`](docs/keyboard-icons-and-proper-pc.ru.md).
+
 ## Как это работает
 
 iGP11.Tool инжектит `iGP11.dll` в игру, тот загружает

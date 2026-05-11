@@ -37,6 +37,9 @@ iGP11 working **and** loads Proper PC Experience (or any other passive
 d3d11-style mod) alongside it, rewriting the game EXE's IAT so the
 mod's `D3D11CreateDevice` actually gets called.
 
+> Want a copy-paste guide for exactly this setup? See
+> [`docs/keyboard-icons-and-proper-pc.md`](docs/keyboard-icons-and-proper-pc.md).
+
 ## What it does
 
 iGP11 is loaded into the game by `iGP11.Tool.exe` via remote-thread
