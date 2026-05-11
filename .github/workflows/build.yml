@@ -1,0 +1,83 @@
+name: Build
+
+on:
+  push:
+    branches: [main, master]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSYS2 + MinGW-w64 (UCRT64)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: false
+          install: >-
+            mingw-w64-ucrt-x86_64-gcc
+            make
+
+      - name: Build
+        shell: msys2 {0}
+        run: |
+          make
+          ls -la iGP11.Direct3D11.dll
+
+      - name: Smoke-test (loads cleanly into a host process)
+        shell: pwsh
+        run: |
+          $code = @'
+          import ctypes, sys
+          try:
+              ctypes.WinDLL("./iGP11.Direct3D11.dll")
+          except OSError as e:
+              print(f"LoadLibrary failed: {e}", file=sys.stderr)
+              sys.exit(1)
+          print("LoadLibrary OK")
+          '@
+          $code | python -
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iGP11.Direct3D11.dll
+          path: |
+            iGP11.Direct3D11.dll
+            iGP11.Direct3D11.dll.ini.example
+            README.md
+            LICENSE
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: iGP11.Direct3D11.dll
+          path: release/
+
+      - name: Pack release zip
+        run: |
+          cd release
+          # Pre-rename ini so users only have to drop the folder in place.
+          mv iGP11.Direct3D11.dll.ini.example iGP11.Direct3D11.dll.ini
+          zip -r ../igp11-proxychain-${GITHUB_REF_NAME}.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: igp11-proxychain-*.zip
+          generate_release_notes: true

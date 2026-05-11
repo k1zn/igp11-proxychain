@@ -1,0 +1,25 @@
+# Build artefacts
+build/
+*.o
+*.exp
+*.lib
+*.a
+*.pdb
+
+# The output DLL: shipped as a Release artifact, not committed.
+/iGP11.Direct3D11.dll
+
+# Runtime files created when smoke-testing
+/proxychain.log
+/iGP11.Direct3D11.dll.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store

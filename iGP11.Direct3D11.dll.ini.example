@@ -1,0 +1,48 @@
+; -----------------------------------------------------------------------------
+; iGP11 proxychain config.
+; Drop this file next to iGP11.Direct3D11.dll (the proxy) and rename it to
+; "iGP11.Direct3D11.dll.ini" so the proxy picks it up at load time.
+; -----------------------------------------------------------------------------
+
+[Settings]
+; 1 = write log to LogFile, 0 = no logging.
+LogEnabled = 1
+
+; Log file path. Relative paths resolve against the proxy DLL's directory.
+LogFile = proxychain.log
+
+; Whether to explicitly LoadLibrary the renamed original DLL after the user
+; DLLs below. The renamed DLL name is hard-coded into the proxy at build time
+; (see Makefile, REAL_DLL=...). With LoadOriginal=0 the OS will load it
+; lazily on first export call.
+LoadOriginal = 1
+
+[DLLs]
+; DLLs to load BEFORE the renamed original, in file order.
+; Keys are arbitrary (just must be unique inside this section); values are
+; paths to DLLs. Paths can be absolute or relative to the proxy DLL.
+;
+; Examples:
+; 1 = mods\my_first_mod.dll
+; 2 = mods\another.dll
+; 3 = C:\Tools\debug_helper.dll
+
+[IAT_Hooks]
+; Rewrite IAT entries of the host EXE so that imports from one DLL get
+; redirected to functions in a DLL loaded above. This is what makes
+; "passive" mods (those that hook stuff inside their own exports) actually
+; receive calls from the game when they aren't installed under the name
+; the game imports from.
+;
+; Format:
+;   <num> = target_dll!target_func -> resolver_dll!resolver_func
+;
+; - target_dll/target_func: the import the host EXE makes, exactly as it
+;   appears in its import table (target_dll is case-insensitive,
+;   target_func is case-sensitive).
+; - resolver_dll: full filename of a DLL that's already loaded; usually
+;   one you listed in [DLLs] above.
+; - resolver_func: the export in resolver_dll to redirect calls to.
+;
+; Example: send DS3's d3d11.D3D11CreateDevice through DS3 ProperPCExperience:
+; 1 = d3d11.dll!D3D11CreateDevice -> DS3_ProperPCExperience_Mod.dll!D3D11CreateDevice
