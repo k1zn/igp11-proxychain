@@ -111,6 +111,14 @@ LogEnabled = 1
 1 = d3d11.dll!D3D11CreateDevice -> DS3_ProperPCExperience_Mod.dll!D3D11CreateDevice
 ```
 
+> **Note on this example:** Proper PC Experience Mod ships as `d3d11.dll`.
+> For this config to work, **rename it to `DS3_ProperPCExperience_Mod.dll`**
+> and drop it next to the proxy DLL (same folder as
+> `iGP11.Direct3D11.dll`). The rename is just so the filename doesn't
+> collide with the system `d3d11.dll`; the IAT hook tells the game's
+> `d3d11.dll!D3D11CreateDevice` to route through the renamed mod
+> instead.
+
 Paths in `[DLLs]` are absolute, or relative to the proxy DLL.
 
 ### 3. Launch the game

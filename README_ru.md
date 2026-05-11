@@ -105,6 +105,14 @@ LogEnabled = 1
 1 = d3d11.dll!D3D11CreateDevice -> DS3_ProperPCExperience_Mod.dll!D3D11CreateDevice
 ```
 
+> **Про этот пример:** Proper PC Experience Mod поставляется как
+> `d3d11.dll`. Чтобы конфиг сработал, **переименуй мод в
+> `DS3_ProperPCExperience_Mod.dll`** и положи в ту же папку, что и
+> proxy-DLL (рядом с `iGP11.Direct3D11.dll`). Переименование нужно
+> просто чтобы имя не конфликтовало с системным `d3d11.dll`;
+> IAT-хук перенаправит вызов `d3d11.dll!D3D11CreateDevice` от игры в
+> переименованный мод.
+
 ### 3. Запусти игру
 
 Через `iGP11.Launcher` как обычно. Рядом появится `proxychain.log`
